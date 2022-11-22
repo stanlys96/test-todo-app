@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
+import Category from './components/Category';
 
-interface TodoList {
+export interface TodoList {
   id: number;
   name: string;
+  status: string;
 }
 
 export default function Home() {
   const [todoList, setTodoList] = useState<TodoList[]>([]);
   const [listItem, setListItem] = useState<string>("");
   let [currentId, setCurrentId] = useState<number>(0);
+  const categories: string[] = ["todo", "in_progress", "done"];
   return (
     <div className="p-12 bg-slate-300 min-h-screen">
       <h1 className="text-4xl font-bold mb-4">TODO LIST</h1>
@@ -26,27 +29,18 @@ export default function Home() {
           if (listItem === "") return;
           const currentTodo: TodoList = {
             id: currentId,
-            name: listItem
+            name: listItem,
+            status: 'todo',
           }
           setTodoList([...todoList, currentTodo]);
           setCurrentId(currentId + 1);
           setListItem("");
         }} value="Add Task" type="button" />
       </div>
-      <div className="grid grid-cols-4 gap-3 mt-5">
+      <div className="grid grid-cols-3 gap-6 mt-5 text-center">
         {
-          todoList.map((item, index) => {
-            return <div className="px-7 py-14 bg-white rounded-xl text-center relative overflow-hidden text-ellipsis" key={item.id}>
-              <span onClick={() => {
-                for (let i = 0; i < todoList.length; i++) {
-                  if (item.id === todoList[i].id) {
-                    setTodoList(todoList.filter(x => x.id != item.id));
-                    break;
-                  }
-                }
-              }} className="cursor-pointer absolute top-2.5 right-4 text-red-600 font-bold">X</span>
-              <span className="text-3xl">{item.name}</span>
-            </div>
+          categories.map((item) => {
+            return <Category status={item} todoList={todoList} setTodoList={setTodoList}  />
           })
         }
       </div>
